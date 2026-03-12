@@ -14,7 +14,7 @@
     <PackageTags>umbraco;umbraco-marketplace</PackageTags>
     <RootNamespace>Umbraco.Community.Engage.LocationHeaders</RootNamespace>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>0.1.1</Version>
+    <Version>0.2.2</Version>
     <Authors>Hjalte Daniel Retz Johansson</Authors>
     <Copyright>$([System.DateTime]::UtcNow.ToString(`yyyy`)) © Hjalte Daniel Retz Johansson</Copyright>
     <PackageProjectUrl>https://github.com/hjaltedaniel-umbraco/Umbraco.Community.Engage.LocationHeaders</PackageProjectUrl>
