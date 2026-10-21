@@ -6,24 +6,24 @@
 
 **Engage - LocationHeaders** is a lightweight package for [Umbraco Engage](https://umbraco.com/products/umbraco-engage/) that enriches analytics and segmentation data with location information extracted from HTTP headers.
 
-The package is designed to work out-of-the-box on **Umbraco Cloud**, using location headers automatically injected by services like **Cloudflare** or **Azure Front Door**. This allows Engage to tap into geographic information such as **country**, **region**, and **city**, without the need for client-side geolocation or third-party services.
+The defaults target **Umbraco Cloud** location headers. You can also configure headers supplied by **Cloudflare**, **Azure Front Door**, or another proxy. The package reads location information already present in the request; it does not perform an IP geolocation lookup itself.
 
 ## ✨ Features
 
-- 🔌 **Plug-and-play for Umbraco Cloud** – no setup required
+- 🔌 **Defaults for Umbraco Cloud** location headers
 - 🌍 **Supports Cloudflare, Azure Front Door, and other CDNs** that inject location headers
 - ⚙️ **Optional configuration** for custom header names or alternative setups
 - 📊 Enables location-based **segmentation** and **analytics** in Umbraco Engage
 
 ## Installation
 
-Add the package to an existing Umbraco website (v13+) from nuget:
+Install the matching major version of Umbraco Engage on your Umbraco 13, 17, or 18 website, then add this package from NuGet:
 
 `dotnet add package Umbraco.Community.Engage.LocationHeaders`
 
 ## 🛠️ Configuration (Optional)
 
-By default, the package expects certain common header names. If your setup uses different headers, you can override the defaults using appsettings configuration:
+By default, the package expects the following Umbraco Cloud header names. If your setup uses different headers, you can override the defaults using appsettings configuration:
 
 ```json
 "Engage": {
@@ -38,9 +38,15 @@ By default, the package expects certain common header names. If your setup uses 
 
 If your infrastructure uses custom headers, you can override the defaults in your `appsettings.json` file. Simply add an `Engage:LocationHeaders` section with keys like `Country`, `County`, `Province`, or `City` and map them to your custom header names.
 
-## 🚀 Getting Started
+## CDN and proxy setup
 
-Install the package via NuGet and deploy it to your Umbraco project. If you’re using a compatible CDN (like Cloudflare), the package will begin collecting location data immediately.
+On **Umbraco Cloud**, verify that the default headers above are present in requests reaching your site.
+
+For **Cloudflare outside Umbraco Cloud**, set `Engage:LocationHeaders:Country` to `cf-ipcountry`. Enable the [Add visitor location headers managed transform](https://developers.cloudflare.com/rules/transform/managed-transforms/reference/#add-visitor-location-headers) to supply `cf-ipcity` and `cf-region`. The country header is also available through Cloudflare IP geolocation alone.
+
+For **Azure Front Door or another proxy**, configure your infrastructure to provide location headers and map their names using the settings above. Installing this package does not make the proxy generate location data. Only map headers that your trusted proxy sets or overwrites.
+
+County and province both use `CF-Region` by default, so they contain the same value unless you configure different headers.
 
 ## 🧠 Use Cases
 
@@ -50,15 +56,23 @@ Install the package via NuGet and deploy it to your Umbraco project. If you’re
 
 ## 📦 Package Compatibility
 
-- Compatible with **Umbraco 13.x**  
-- Optimized for **Umbraco Cloud**  
-- Requires **Umbraco Engage**
+| Umbraco CMS | Umbraco Engage | .NET |
+| --- | --- | --- |
+| 13.x | 13.x | 8 |
+| 17.x | 17.x | 10 |
+| 18.x | 18.x | 10 |
+
+Umbraco 17 and 18 use the same .NET 10 assembly. Versions outside this table have not been verified.
+
+### Support policy
+
+Support for this package on each Umbraco major version follows the [underlying Umbraco version's end-of-life date](https://umbraco.com/products/knowledge-center/long-term-support-and-end-of-life/). Once an Umbraco version reaches EOL, this package no longer receives fixes or compatibility testing for that version. Existing releases remain available on NuGet.
 
 Bring location awareness to your digital experiences with **Engage - LocationHeaders** – simple, configurable, and Umbraco Cloud-ready.
 
 ## Contributing
 
-Contributions to this package are most welcome! Please read the [Contributing Guidelines](CONTRIBUTING.md).
+Contributions to this package are most welcome! Please read the [Contributing Guidelines](https://github.com/hjaltedaniel/Umbraco.Community.Engage.LocationHeaders/blob/main/.github/CONTRIBUTING.md).
 
 ## 🙌 Acknowledgements
 
