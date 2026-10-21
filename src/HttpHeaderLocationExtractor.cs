@@ -55,8 +55,18 @@ namespace Umbraco.Community.Engage.LocationHeaders
             if (input == null) return null;
 
             var urlDecoded = WebUtility.UrlDecode(input);
-            var latin1Bytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(urlDecoded);
-            return Encoding.UTF8.GetString(latin1Bytes);
+            // Only repair UTF-8 bytes read as Latin-1 when the conversion is lossless.
+            if (urlDecoded.Any(character => character > byte.MaxValue)) return urlDecoded;
+
+            var latin1Bytes = Encoding.Latin1.GetBytes(urlDecoded);
+            try
+            {
+                return new UTF8Encoding(false, true).GetString(latin1Bytes);
+            }
+            catch (DecoderFallbackException)
+            {
+                return urlDecoded;
+            }
         }
     }
 }
