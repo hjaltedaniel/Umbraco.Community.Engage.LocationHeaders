@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - "[0-9]+.[0-9]+.[0-9]+"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to publish (for example 0.3.0)
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -11,13 +17,19 @@ permissions:
 jobs:
   validate:
     uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ inputs.tag && format('refs/tags/{0}', inputs.tag) || github.ref }}
 
   publish:
     needs: validate
     runs-on: windows-latest
+    env:
+      RELEASE_VERSION: ${{ inputs.tag || github.ref_name }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.tag && format('refs/tags/{0}', inputs.tag) || github.ref }}
       - name: Setup .NET
         uses: actions/setup-dotnet@v6
         with:
@@ -25,8 +37,8 @@ jobs:
             8.0.x
             10.0.x
       - name: Pack tagged version
-        run: dotnet pack src/Umbraco.Community.Engage.LocationHeaders.csproj --configuration Release --output artifacts/packages -p:GeneratePackageOnBuild=false -p:PackageVersion=${{ github.ref_name }}
+        run: dotnet pack src/Umbraco.Community.Engage.LocationHeaders.csproj --configuration Release --output artifacts/packages -p:GeneratePackageOnBuild=false -p:PackageVersion=$env:RELEASE_VERSION
       - name: Push to NuGet
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        run: dotnet nuget push "artifacts/packages/*.nupkg" --api-key "$env:NUGET_API_KEY" --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push "artifacts/packages/Umbraco.Community.Engage.LocationHeaders.${env:RELEASE_VERSION}.nupkg" --api-key "$env:NUGET_API_KEY" --source https://api.nuget.org/v3/index.json
