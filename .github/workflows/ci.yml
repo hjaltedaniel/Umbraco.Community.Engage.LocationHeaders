@@ -1,0 +1,30 @@
+name: Build and Test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+      - name: Build and audit package
+        run: dotnet build src/Umbraco.Community.Engage.LocationHeaders.csproj --configuration Release -p:NuGetAuditMode=all
+      - name: Run regression and compatibility tests
+        shell: bash
+        run: |
+          shopt -s nullglob
+          for project in tests/*.csproj compatibility/*.csproj; do
+            dotnet test "$project" --configuration Release -p:NuGetAuditMode=all
+          done
