@@ -1,0 +1,20 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: nuget
+    directories:
+      - /src
+      - /tests
+      - /compatibility
+    schedule:
+      interval: weekly
+    ignore:
+      - dependency-name: Umbraco.Cms.Core
+        update-types: [version-update:semver-major]
+      - dependency-name: Umbraco.Engage.Core
+        update-types: [version-update:semver-major]
+      - dependency-name: MessagePack
+        update-types: [version-update:semver-major]
