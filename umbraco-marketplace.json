@@ -2,9 +2,9 @@
     "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json", 
     "AuthorDetails": {
       "Name": "Hjalte Daniel Retz Johansson",
-      "Description": "Hjalte works at Umbraco HQ. This package is provided in a personal capacity.",
+      "Description": "Hjalte brings a developer's curiosity and a commercial perspective to connecting technology, people, and better ways of working.",
       "Url": "https://hjaltedaniel.io",
-      "ImageUrl": "https://hjaltedaniel.io/img/profile.4fd21683.jpg"
+      "ImageUrl": "https://hjaltedaniel.io/images/portrait-480.avif"
     },
     "Category": "Campaign & Marketing",
     "AlternateCategory": "Analytics & Insights",
